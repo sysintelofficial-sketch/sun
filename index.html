@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Intelligence - True Solar System Matrix</title>
+    <style>
+        body {
+            /* گہرے خلا (Deep Space) جیسا پس منظر */
+            background: radial-gradient(circle at center, #0a0e17 0%, #000000 100%);
+            color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        .universe {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* سورج جس کی روشنی اب واقعی کم اور زیادہ ہوگی */
+        .sun {
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            margin-top: -60px;
+            margin-left: -60px;
+            background: radial-gradient(circle, #ffffff 0%, #ffcc00 40%, #ff4500 100%);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            font-size: 16px;
+            color: #fff;
+            text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.9);
+            /* سورج کی چمک کا اینیمیشن */
+            animation: sunPulse 3s ease-in-out infinite alternate;
+            z-index: 1000;
+        }
+
+        /* سورج کی روشنی کا اصلی اینیمیشن (تیز اور مدھم ہونا) */
+        @keyframes sunPulse {
+            0% { 
+                transform: scale(0.95); 
+                box-shadow: 0 0 30px #ffbb00, 0 0 60px #ff4500, 0 0 80px rgba(255, 69, 0, 0.4); 
+            }
+            50% { 
+                transform: scale(1.02); 
+                box-shadow: 0 0 60px #ffcc00, 0 0 100px #ff3300, 0 0 150px rgba(255, 50, 0, 0.6); 
+            }
+            100% { 
+                transform: scale(1.08); 
+                box-shadow: 0 0 100px #ffff00, 0 0 180px #ff0000, 0 0 250px rgba(255, 0, 0, 0.9); 
+            }
+        }
+
+        /* مدار کی لائنیں */
+        .orbit-ring {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border: 1px solid rgba(255, 255, 255, 0.05); /* بہت ہلکی لائن */
+            border-radius: 50%;
+            animation: rotateOrbit linear infinite;
+            pointer-events: none;
+        }
+
+        /* سیارے کا ڈیزائن */
+        .planet {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: auto;
+        }
+
+        /* سیاروں کے نام جو ہمیشہ سیدھے رہیں گے */
+        .planet-label {
+            position: absolute;
+            font-size: 11px;
+            white-space: nowrap;
+            color: #e2e8f0;
+            text-shadow: 1px 1px 3px #000, -1px -1px 3px #000;
+            animation: counterRotate linear infinite;
+        }
+
+        /* مدار میں گھومنے کا اینیمیشن */
+        @keyframes rotateOrbit {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        /* ناموں کو سیدھا رکھنے کا اینیمیشن */
+        @keyframes counterRotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(-360deg); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="universe" id="universe">
+        <div class="sun">Mathematics</div>
+    </div>
+
+    <script>
+        const domains = [
+            // 21 Industries / Sectors
+            "Agricultural", "Airline", "Grid Systems", "Banking", "Diplomacy", 
+            "Construction", "Education", "E-commerce", "Food Systems", "Healthcare", 
+            "Hotel", "Manufacturing", "Insurance", "Defense", "Pharmaceuticals", 
+            "Real Estate", "Retail", "Shipping", "Telecom", "Transmission", "Transportation",
+            
+            // 14 Engineering Fields
+            "Aerospace Engineering", "Agricultural Engineering", "Architectural Engineering", 
+            "Biomedical Engineering", "Chemical Engineering", "Civil Engineering", 
+            "Computer Engineering", "Electrical Engineering", "Environmental Engineering", 
+            "Industrial Engineering", "Software Engineering", "Mechanical Engineering", 
+            "Nuclear Engineering", "Petroleum Engineering"
+        ];
+
+        // مختلف اور اصلی سیاروں والے رنگوں کی کلیکشن
+        const planetColors = [
+            "#ff5733", "#33ff57", "#3357ff", "#f4d03f", "#9b59b6", "#1abc9c", "#e67e22", 
+            "#e74c3c", "#3498db", "#2ecc71", "#f1c40f", "#8e44ad", "#d35400", "#c0392b",
+            "#2980b9", "#27ae60", "#f39c12", "#16a085", "#ff9ff3", "#feca57", "#54a0ff", 
+            "#5f27cd", "#48dbfb", "#1dd1a1", "#ff6b6b", "#c8d6e5", "#8395a7", "#00d2d3",
+            "#ff9f43", "#ee5253", "#0abde3", "#10ac84", "#222f3e", "#f368e0", "#ff0000"
+        ];
+
+        const universe = document.getElementById("universe");
+        const baseRadius = 100;   // سورج سے پہلے سیارے کا فاصلہ
+        const radiusStep = 22;    // مداروں کے درمیان فاصلہ
+
+        domains.forEach((domain, i) => {
+            const radius = baseRadius + (i * radiusStep);
+
+            // مدار (Orbit) بنانا
+            const orbitRing = document.createElement("div");
+            orbitRing.className = "orbit-ring";
+            orbitRing.style.width = `${radius * 2}px`;
+            orbitRing.style.height = `${radius * 2}px`;
+            
+            // رفتار کو دھیما رکھا گیا ہے تاکہ پڑھنے میں آسانی ہو
+            const speed = 120 + (i * 8); 
+            orbitRing.style.animationDuration = `${speed}s`;
+
+            // ہر سیارے کو مدار میں الگ الگ جگہ سے شروع کرنے کے لیے Random Delay
+            const randomStartDelay = -(Math.random() * speed); 
+            orbitRing.style.animationDelay = `${randomStartDelay}s`;
+
+            // سیارہ (Planet) بنانا
+            const planet = document.createElement("div");
+            planet.className = "planet";
+            
+            // سائز کو رینڈم کرنا (8px سے لے کر 26px تک چھوٹے بڑے سیارے)
+            const size = Math.floor(Math.random() * 18) + 8;
+            planet.style.width = `${size}px`;
+            planet.style.height = `${size}px`;
+            
+            // سیارے کو خوبصورت 3D رنگ دینا
+            const baseColor = planetColors[i % planetColors.length];
+            planet.style.background = `radial-gradient(circle at 30% 30%, ${baseColor}, #000000)`;
+            planet.style.boxShadow = `0 0 ${size / 2}px ${baseColor}`;
+
+            // سیارے کے نام کا لیبل (Label)
+            const label = document.createElement("div");
+            label.className = "planet-label";
+            label.innerText = domain;
+            label.style.animationDuration = `${speed}s`;
+            // نام کو سیدھا رکھنے کے لیے بھی وہی Random Delay دینا ضروری ہے
+            label.style.animationDelay = `${randomStartDelay}s`;
+            
+            // لیبل کی پوزیشن کو سیارے کے سائز کے حساب سے ایڈجسٹ کرنا تاکہ نام سیارے پر نہ چڑھے
+            label.style.left = `${size + 6}px`;
+            label.style.top = `-${(size / 4)}px`;
+
+            // سب کو جوڑ کر سکرین پر دکھانا
+            planet.appendChild(label);
+            orbitRing.appendChild(planet);
+            universe.appendChild(orbitRing);
+        });
+    </script>
+
+</body>
+</html>
