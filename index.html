@@ -3,196 +3,843 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>System Intelligence - True Solar System Matrix</title>
+    <title>System Intelligence - Multi-Sector Network Integration</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        body {
-            /* گہرے خلا (Deep Space) جیسا پس منظر */
-            background: radial-gradient(circle at center, #0a0e17 0%, #000000 100%);
-            color: white;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            overflow: hidden;
+        :root {
+            --bg-color: #030712;
+            --primary-cyan: #00f0ff;
+            --secondary-blue: #0072ff;
+            --accent-gold: #ffb703;
+            --glow-cyan: rgba(0, 240, 255, 0.4);
+            --card-bg: rgba(10, 20, 38, 0.75);
+            --border-color: rgba(0, 240, 255, 0.25);
+            --text-bright: #f8fafc;
+            --text-dim: #94a3b8;
         }
 
-        .universe {
-            position: relative;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-bright);
+            font-family: 'Rajdhani', sans-serif;
+            overflow: hidden;
             width: 100vw;
             height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
         }
 
-        /* سورج جس کی روشنی اب واقعی کم اور زیادہ ہوگی */
-        .sun {
-            position: absolute;
-            width: 120px;
-            height: 120px;
-            margin-top: -60px;
-            margin-left: -60px;
-            background: radial-gradient(circle, #ffffff 0%, #ffcc00 40%, #ff4500 100%);
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-weight: bold;
-            font-size: 16px;
-            color: #fff;
-            text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.9);
-            /* سورج کی چمک کا اینیمیشن */
-            animation: sunPulse 3s ease-in-out infinite alternate;
-            z-index: 1000;
-        }
-
-        /* سورج کی روشنی کا اصلی اینیمیشن (تیز اور مدھم ہونا) */
-        @keyframes sunPulse {
-            0% { 
-                transform: scale(0.95); 
-                box-shadow: 0 0 30px #ffbb00, 0 0 60px #ff4500, 0 0 80px rgba(255, 69, 0, 0.4); 
-            }
-            50% { 
-                transform: scale(1.02); 
-                box-shadow: 0 0 60px #ffcc00, 0 0 100px #ff3300, 0 0 150px rgba(255, 50, 0, 0.6); 
-            }
-            100% { 
-                transform: scale(1.08); 
-                box-shadow: 0 0 100px #ffff00, 0 0 180px #ff0000, 0 0 250px rgba(255, 0, 0, 0.9); 
-            }
-        }
-
-        /* مدار کی لائنیں */
-        .orbit-ring {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            border: 1px solid rgba(255, 255, 255, 0.05); /* بہت ہلکی لائن */
-            border-radius: 50%;
-            animation: rotateOrbit linear infinite;
-            pointer-events: none;
-        }
-
-        /* سیارے کا ڈیزائن */
-        .planet {
+        /* Canvas Background */
+        #network-canvas {
             position: absolute;
             top: 0;
-            left: 50%;
-            border-radius: 50%;
-            transform: translate(-50%, -50%);
-            pointer-events: auto;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
         }
 
-        /* سیاروں کے نام جو ہمیشہ سیدھے رہیں گے */
-        .planet-label {
+        /* Header UI */
+        header {
             position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            text-align: center;
+            pointer-events: none;
+            width: 90%;
+            max-width: 1200px;
+        }
+
+        .header-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 26px;
+            font-weight: 900;
+            letter-spacing: 4px;
+            color: #ffffff;
+            text-shadow: 0 0 15px var(--primary-cyan), 0 0 30px var(--secondary-blue);
+            text-transform: uppercase;
+        }
+
+        .header-subtitle {
+            font-size: 13px;
+            letter-spacing: 3px;
+            color: var(--primary-cyan);
+            margin-top: 4px;
+            font-weight: 600;
+            text-shadow: 0 0 8px rgba(0, 240, 255, 0.6);
+        }
+
+        /* Ticker Bar */
+        .ticker-bar {
+            position: absolute;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            background: rgba(4, 15, 30, 0.8);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 6px 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            backdrop-filter: blur(8px);
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.15);
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background-color: var(--primary-cyan);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--primary-cyan);
+            animation: pulse-dot 1.5s infinite alternate;
+        }
+
+        @keyframes pulse-dot {
+            0% { opacity: 0.3; transform: scale(0.8); }
+            100% { opacity: 1; transform: scale(1.3); }
+        }
+
+        .ticker-text {
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            color: var(--text-dim);
+            text-transform: uppercase;
+        }
+
+        .ticker-highlight {
+            color: var(--accent-gold);
+            font-weight: 700;
+        }
+
+        /* HUD Panels */
+        .hud-panel {
+            position: absolute;
+            z-index: 10;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 16px;
+            backdrop-filter: blur(12px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6), inset 0 0 15px rgba(0, 240, 255, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        /* Left Stats Panel */
+        .left-panel {
+            top: 130px;
+            left: 25px;
+            width: 260px;
+        }
+
+        .panel-header {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--primary-cyan);
+            border-bottom: 1px solid rgba(0, 240, 255, 0.2);
+            padding-bottom: 8px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            font-size: 13px;
+        }
+
+        .stat-label {
+            color: var(--text-dim);
+            font-weight: 500;
+        }
+
+        .stat-value {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--text-bright);
+            font-weight: 600;
+        }
+
+        .progress-bar-bg {
+            width: 100%;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: 4px;
+            margin-bottom: 12px;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--secondary-blue), var(--primary-cyan));
+            width: 88%;
+            box-shadow: 0 0 8px var(--primary-cyan);
+            transition: width 0.5s ease;
+        }
+
+        /* Right Node Details Inspector */
+        .right-panel {
+            top: 130px;
+            right: 25px;
+            width: 300px;
+        }
+
+        .node-detail-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 16px;
+            font-weight: 800;
+            color: var(--accent-gold);
+            margin-bottom: 4px;
+            text-transform: uppercase;
+        }
+
+        .node-category {
             font-size: 11px;
-            white-space: nowrap;
-            color: #e2e8f0;
-            text-shadow: 1px 1px 3px #000, -1px -1px 3px #000;
-            animation: counterRotate linear infinite;
+            letter-spacing: 1.5px;
+            color: var(--primary-cyan);
+            text-transform: uppercase;
+            margin-bottom: 12px;
+            font-weight: 700;
         }
 
-        /* مدار میں گھومنے کا اینیمیشن */
-        @keyframes rotateOrbit {
-            0% { transform: translate(-50%, -50%) rotate(0deg); }
-            100% { transform: translate(-50%, -50%) rotate(360deg); }
+        .node-desc {
+            font-size: 12px;
+            line-height: 1.5;
+            color: var(--text-dim);
+            margin-bottom: 14px;
         }
 
-        /* ناموں کو سیدھا رکھنے کا اینیمیشن */
-        @keyframes counterRotate {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(-360deg); }
+        .metric-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            background: rgba(0, 240, 255, 0.1);
+            border: 1px solid var(--primary-cyan);
+            border-radius: 4px;
+            font-size: 11px;
+            color: var(--primary-cyan);
+            font-weight: 700;
+            margin-right: 6px;
+            margin-bottom: 6px;
+        }
+
+        /* Controls Bottom Panel */
+        .bottom-controls {
+            position: absolute;
+            bottom: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn-action {
+            background: rgba(4, 20, 40, 0.85);
+            border: 1px solid var(--primary-cyan);
+            color: var(--primary-cyan);
+            font-family: 'Orbitron', sans-serif;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            backdrop-filter: blur(8px);
+            transition: all 0.2s ease;
+            box-shadow: 0 0 10px rgba(0, 240, 255, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-action:hover {
+            background: var(--primary-cyan);
+            color: #000;
+            box-shadow: 0 0 20px var(--primary-cyan);
+            transform: translateY(-2px);
+        }
+
+        .btn-action:active {
+            transform: translateY(0);
+        }
+
+        /* Tooltip */
+        #tooltip {
+            position: absolute;
+            z-index: 20;
+            pointer-events: none;
+            background: rgba(2, 8, 20, 0.9);
+            border: 1px solid var(--primary-cyan);
+            padding: 8px 14px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #fff;
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.4);
+            display: none;
+            transform: translate(-50%, -120%);
+        }
+
+        /* Corner Decorative Lines */
+        .decor-corner {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            border: 2px solid var(--primary-cyan);
+            pointer-events: none;
+            z-index: 5;
+            opacity: 0.6;
+        }
+
+        .top-left { top: 15px; left: 15px; border-right: none; border-bottom: none; }
+        .top-right { top: 15px; right: 15px; border-left: none; border-bottom: none; }
+        .bottom-left { bottom: 15px; left: 15px; border-right: none; border-top: none; }
+        .bottom-right { bottom: 15px; right: 15px; border-left: none; border-top: none; }
+
+        @media (max-width: 900px) {
+            .left-panel, .right-panel {
+                display: none;
+            }
+            .header-title { font-size: 18px; }
+            .ticker-bar { display: none; }
         }
     </style>
 </head>
 <body>
 
-    <div class="universe" id="universe">
-        <div class="sun">Mathematics</div>
+    <div class="decor-corner top-left"></div>
+    <div class="decor-corner top-right"></div>
+    <div class="decor-corner bottom-left"></div>
+    <div class="decor-corner bottom-right"></div>
+
+    <header>
+        <div class="header-title">System Intelligence</div>
+        <div class="header-subtitle">Multi-Sector Optimization & Unified Network Core</div>
+    </header>
+
+    <div class="ticker-bar">
+        <div class="status-dot"></div>
+        <div class="ticker-text">Network Core: <span class="ticker-highlight">Optimal</span> | Active Conduits: <span class="ticker-highlight">100% Sync</span> | Latency: <span class="ticker-highlight">0.42 ms</span></div>
     </div>
 
+    <!-- Left Stats Panel -->
+    <div class="hud-panel left-panel">
+        <div class="panel-header">
+            <span>CORE METRICS</span>
+            <span style="font-size: 10px; color: var(--accent-gold);">● LIVE</span>
+        </div>
+
+        <div class="stat-row">
+            <span class="stat-label">Neural Throughput</span>
+            <span class="stat-value" id="val-throughput">128.4 TB/s</span>
+        </div>
+        <div class="progress-bar-bg"><div class="progress-bar-fill" id="pb-throughput" style="width: 85%;"></div></div>
+
+        <div class="stat-row">
+            <span class="stat-label">System Load</span>
+            <span class="stat-value" id="val-load">42.8%</span>
+        </div>
+        <div class="progress-bar-bg"><div class="progress-bar-fill" id="pb-load" style="width: 42%; background: linear-gradient(90deg, #00f0ff, #ffb703);"></div></div>
+
+        <div class="stat-row">
+            <span class="stat-label">Connected Sectors</span>
+            <span class="stat-value">21 / 21</span>
+        </div>
+
+        <div class="stat-row">
+            <span class="stat-label">Quantum Nodes</span>
+            <span class="stat-value">Active (Sync)</span>
+        </div>
+
+        <div class="stat-row">
+            <span class="stat-label">Security Shield</span>
+            <span class="stat-value" style="color: #10b981;">100% Encrypted</span>
+        </div>
+    </div>
+
+    <!-- Right Node Detail Inspector -->
+    <div class="hud-panel right-panel" id="inspector-panel">
+        <div class="panel-header">
+            <span>NODE INSPECTOR</span>
+            <span style="font-size: 10px; color: var(--primary-cyan);" id="node-id-tag">CORE-01</span>
+        </div>
+        <div class="node-detail-title" id="node-title">System Intelligence (Si)</div>
+        <div class="node-category" id="node-type">Central Neural Core</div>
+        <div class="node-desc" id="node-desc">
+            The central command processing hub executing multi-sector algorithms, predictive modeling, and real-time automated network orchestration across all integrated global domains.
+        </div>
+        <div>
+            <span class="metric-badge" id="badge-1">Real-time Optimization</span>
+            <span class="metric-badge" id="badge-2">Unified Matrix</span>
+            <span class="metric-badge" id="badge-3">Autonomous Protocol</span>
+        </div>
+    </div>
+
+    <!-- Bottom Action Controls -->
+    <div class="bottom-controls">
+        <button class="btn-action" id="btn-pulse">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v8M8 12h8"/></svg>
+            Trigger Neural Pulse
+        </button>
+        <button class="btn-action" id="btn-filter">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z"/></svg>
+            View Mode: All Nodes
+        </button>
+        <button class="btn-action" id="btn-reset">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+            Reset Camera
+        </button>
+    </div>
+
+    <div id="tooltip"></div>
+
+    <canvas id="network-canvas"></canvas>
+
     <script>
-        const domains = [
-            // 21 Industries / Sectors
-            "Agricultural", "Airline", "Grid Systems", "Banking", "Diplomacy", 
-            "Construction", "Education", "E-commerce", "Food Systems", "Healthcare", 
-            "Hotel", "Manufacturing", "Insurance", "Defense", "Pharmaceuticals", 
-            "Real Estate", "Retail", "Shipping", "Telecom", "Transmission", "Transportation",
-            
-            // 14 Engineering Fields
-            "Aerospace Engineering", "Agricultural Engineering", "Architectural Engineering", 
-            "Biomedical Engineering", "Chemical Engineering", "Civil Engineering", 
-            "Computer Engineering", "Electrical Engineering", "Environmental Engineering", 
-            "Industrial Engineering", "Software Engineering", "Mechanical Engineering", 
-            "Nuclear Engineering", "Petroleum Engineering"
-        ];
+        const canvas = document.getElementById('network-canvas');
+        const ctx = canvas.getContext('2d');
+        const tooltip = document.getElementById('tooltip');
 
-        // مختلف اور اصلی سیاروں والے رنگوں کی کلیکشن
-        const planetColors = [
-            "#ff5733", "#33ff57", "#3357ff", "#f4d03f", "#9b59b6", "#1abc9c", "#e67e22", 
-            "#e74c3c", "#3498db", "#2ecc71", "#f1c40f", "#8e44ad", "#d35400", "#c0392b",
-            "#2980b9", "#27ae60", "#f39c12", "#16a085", "#ff9ff3", "#feca57", "#54a0ff", 
-            "#5f27cd", "#48dbfb", "#1dd1a1", "#ff6b6b", "#c8d6e5", "#8395a7", "#00d2d3",
-            "#ff9f43", "#ee5253", "#0abde3", "#10ac84", "#222f3e", "#f368e0", "#ff0000"
-        ];
+        let width, height, centerX, centerY;
+        let animationFrameId;
+        let pulseRipples = [];
+        let viewMode = 0; // 0: All, 1: Domain, 2: Macro Infrastructure
+        let hoverNode = null;
 
-        const universe = document.getElementById("universe");
-        const baseRadius = 100;   // سورج سے پہلے سیارے کا فاصلہ
-        const radiusStep = 22;    // مداروں کے درمیان فاصلہ
+        // Sectors & Industries mapping directly from the system architecture graphic
+        const sectorData = {
+            core: {
+                id: 'core',
+                label: 'System Intelligence',
+                symbol: 'Si',
+                category: 'Central Processing Core',
+                desc: 'The central command processing hub executing multi-sector algorithms, predictive modeling, and real-time automated network orchestration across all integrated global domains.',
+                badges: ['Unified Core', 'Quantum Routing', 'Global Sync'],
+                color: '#00f0ff'
+            },
+            inner: [
+                { id: 'banking', label: 'Banking', symbol: '🏦', desc: 'Automated high-frequency liquidity, risk mitigation modeling, and real-time ledger verification.', badges: ['Fintech AI', 'Automated Risk'] },
+                { id: 'diplomacy', label: 'Diplomacy', symbol: '🏛️', desc: 'Geopolitical analysis, conflict prediction models, and strategic multi-lateral simulation arrays.', badges: ['Policy Analytics', 'Global Models'] },
+                { id: 'construction', label: 'Construction', symbol: '🏗️', desc: 'Autonomous robotics orchestration, structural digital twins, and material supply optimization.', badges: ['Digital Twin', 'Robotic Fleet'] },
+                { id: 'education', label: 'Education', symbol: '🎓', desc: 'Adaptive learning pathways, dynamic curriculum synthesis, and talent capital forecasting.', badges: ['Adaptive AI', 'Knowledge Graph'] },
+                { id: 'insurance', label: 'Insurance', symbol: '🛡️', desc: 'Actuarial automated modeling, parametric claims settlement, and catastrophe forecasting.', badges: ['Parametric Claims', 'Actuarial AI'] },
+                { id: 'manufacturing', label: 'Manufacturing', symbol: '🏭', desc: 'Smart factory automation, zero-downtime predictive maintenance, and supply pipeline synthesis.', badges: ['Industry 4.0', 'Zero-Downtime'] },
+                { id: 'hotel', label: 'Hotel & Hospitality', symbol: '🏨', desc: 'Predictive dynamic pricing, guest experience personalization, and automated energy management.', badges: ['Guest CX', 'Yield Mgmt'] },
+                { id: 'healthcare', label: 'Healthcare', symbol: '🏥', desc: 'AI diagnostics, personalized genomic treatment pipelines, and hospital capacity orchestration.', badges: ['AI Diagnostics', 'Precision Med'] },
+                { id: 'retail', label: 'Retail', symbol: '🛒', desc: 'Real-time demand sensing, localized inventory balancing, and automated store operations.', badges: ['Demand Sensing', 'Smart Inventory'] },
+                { id: 'food', label: 'Food Systems', symbol: '🍱', desc: 'Cold chain integrity monitoring, nutritional tracing, and food security waste minimization.', badges: ['Cold Chain', 'Zero-Waste'] },
+                { id: 'ecommerce', label: 'E-Commerce', symbol: '📦', desc: 'Autonomous last-mile fulfillment, conversion optimization, and dynamic fraud prevention.', badges: ['Fulfillment AI', 'Anti-Fraud'] },
+                { id: 'grid_sys', label: 'Grid Systems', symbol: '⚡', desc: 'Microgrid balancing, demand-response load shifting, and power distribution stabilization.', badges: ['Smart Grid', 'Load Balancing'] },
+                { id: 'airline', label: 'Airline', symbol: '✈️', desc: 'Autonomous flight routing, fuel optimization, and fleet maintenance synchronization.', badges: ['Flight Routing', 'Fuel Efficiency'] },
+                { id: 'agricultural', label: 'Agricultural', symbol: '🌾', desc: 'Precision farming, soil yield analytics, automated crop monitoring via drone arrays.', badges: ['Precision Ag', 'Yield Analytics'] }
+            ],
+            outer: [
+                { id: 'renewable', label: 'Renewable Energy Grid', symbol: '♻️', desc: 'Macro solar, wind, and storage integration optimizing clean power generation distribution.', badges: ['Clean Energy', 'Storage Sync'] },
+                { id: 'maritime', label: 'Global Maritime Logistics', symbol: '🚢', desc: 'Autonomous cargo fleet tracking, port congestion prediction, and oceanic vessel routing.', badges: ['Smart Ports', 'Maritime AI'] },
+                { id: 'autonomous', label: 'Autonomous Transport Network', symbol: '🚘', desc: 'City-wide V2X communication, automated traffic flow optimization, and electric vehicle fleet routing.', badges: ['V2X Fleet', 'Traffic AI'] },
+                { id: 'cyber', label: 'Cyber-Security Shield', symbol: '🔒', desc: 'Autonomous threat neutralizers, zero-trust network validation, and quantum-resistant encryption.', badges: ['Zero Trust', 'Quantum Secure'] },
+                { id: 'aerospace', label: 'Aerospace & Satellite Comms', symbol: '🚀', desc: 'Orbital satellite constellation coordination, deep-space telemetries, and low-latency uplink grids.', badges: ['Satellite Array', 'Low-Latency'] },
+                { id: 'emergency', label: 'Emergency Response Coordination', symbol: '🚨', desc: 'Real-time crisis telemetry, automated disaster response dispatch, and dynamic resource triage.', badges: ['Crisis Dispatch', 'Real-Time Triage'] },
+                { id: 'quantum', label: 'Quantum Computing Nodes', symbol: '⚛️', desc: 'Ultra-high-speed quantum processing units solving complex molecular, logistical, and computational models.', badges: ['Quantum Processing', 'Sub-ms Compute'] }
+            ]
+        };
 
-        domains.forEach((domain, i) => {
-            const radius = baseRadius + (i * radiusStep);
+        let nodes = [];
+        let connections = [];
+        let particles = [];
 
-            // مدار (Orbit) بنانا
-            const orbitRing = document.createElement("div");
-            orbitRing.className = "orbit-ring";
-            orbitRing.style.width = `${radius * 2}px`;
-            orbitRing.style.height = `${radius * 2}px`;
-            
-            // رفتار کو دھیما رکھا گیا ہے تاکہ پڑھنے میں آسانی ہو
-            const speed = 120 + (i * 8); 
-            orbitRing.style.animationDuration = `${speed}s`;
+        function resize() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+            centerX = width / 2;
+            centerY = height / 2 + 20;
+            initNodes();
+        }
 
-            // ہر سیارے کو مدار میں الگ الگ جگہ سے شروع کرنے کے لیے Random Delay
-            const randomStartDelay = -(Math.random() * speed); 
-            orbitRing.style.animationDelay = `${randomStartDelay}s`;
+        function initNodes() {
+            nodes = [];
+            connections = [];
+            particles = [];
 
-            // سیارہ (Planet) بنانا
-            const planet = document.createElement("div");
-            planet.className = "planet";
-            
-            // سائز کو رینڈم کرنا (8px سے لے کر 26px تک چھوٹے بڑے سیارے)
-            const size = Math.floor(Math.random() * 18) + 8;
-            planet.style.width = `${size}px`;
-            planet.style.height = `${size}px`;
-            
-            // سیارے کو خوبصورت 3D رنگ دینا
-            const baseColor = planetColors[i % planetColors.length];
-            planet.style.background = `radial-gradient(circle at 30% 30%, ${baseColor}, #000000)`;
-            planet.style.boxShadow = `0 0 ${size / 2}px ${baseColor}`;
+            // Central Core Node
+            const coreNode = {
+                ...sectorData.core,
+                x: centerX,
+                y: centerY,
+                radius: 42,
+                ringRadius: 55,
+                angle: 0,
+                type: 'core'
+            };
+            nodes.push(coreNode);
 
-            // سیارے کے نام کا لیبل (Label)
-            const label = document.createElement("div");
-            label.className = "planet-label";
-            label.innerText = domain;
-            label.style.animationDuration = `${speed}s`;
-            // نام کو سیدھا رکھنے کے لیے بھی وہی Random Delay دینا ضروری ہے
-            label.style.animationDelay = `${randomStartDelay}s`;
-            
-            // لیبل کی پوزیشن کو سیارے کے سائز کے حساب سے ایڈجسٹ کرنا تاکہ نام سیارے پر نہ چڑھے
-            label.style.left = `${size + 6}px`;
-            label.style.top = `-${(size / 4)}px`;
+            // Inner Ring Nodes (14 sectors)
+            const innerCount = sectorData.inner.length;
+            const innerOrbitRadius = Math.min(width, height) * 0.23;
 
-            // سب کو جوڑ کر سکرین پر دکھانا
-            planet.appendChild(label);
-            orbitRing.appendChild(planet);
-            universe.appendChild(orbitRing);
+            sectorData.inner.forEach((item, index) => {
+                const angle = (index / innerCount) * Math.PI * 2 - Math.PI / 2;
+                const x = centerX + Math.cos(angle) * innerOrbitRadius;
+                const y = centerY + Math.sin(angle) * innerOrbitRadius;
+
+                const node = {
+                    ...item,
+                    x, y,
+                    angle,
+                    orbitRadius: innerOrbitRadius,
+                    radius: 18,
+                    type: 'inner',
+                    parent: coreNode
+                };
+                nodes.push(node);
+
+                // Connection line Core <-> Inner
+                connections.push({ from: coreNode, to: node, type: 'primary' });
+
+                // Spawn persistent flow particles
+                for (let i = 0; i < 2; i++) {
+                    particles.push({
+                        from: coreNode,
+                        to: node,
+                        progress: Math.random(),
+                        speed: 0.003 + Math.random() * 0.004,
+                        size: 2.5,
+                        color: '#00f0ff'
+                    });
+                }
+            });
+
+            // Outer Ring Nodes (7 Macro Infrastructure sectors)
+            const outerCount = sectorData.outer.length;
+            const outerOrbitRadius = Math.min(width, height) * 0.38;
+
+            sectorData.outer.forEach((item, index) => {
+                const angle = (index / outerCount) * Math.PI * 2 - Math.PI / 2 + (Math.PI / outerCount);
+                const x = centerX + Math.cos(angle) * outerOrbitRadius;
+                const y = centerY + Math.sin(angle) * outerOrbitRadius;
+
+                const node = {
+                    ...item,
+                    x, y,
+                    angle,
+                    orbitRadius: outerOrbitRadius,
+                    radius: 24,
+                    type: 'outer',
+                    parent: coreNode
+                };
+                nodes.push(node);
+
+                connections.push({ from: coreNode, to: node, type: 'secondary' });
+
+                // Connect outer nodes to nearest inner nodes for mesh network effect
+                nodes.forEach(inner => {
+                    if (inner.type === 'inner') {
+                        const dist = Math.hypot(inner.x - x, inner.y - y);
+                        if (dist < outerOrbitRadius * 0.6) {
+                            connections.push({ from: inner, to: node, type: 'mesh' });
+                        }
+                    }
+                });
+
+                for (let i = 0; i < 3; i++) {
+                    particles.push({
+                        from: coreNode,
+                        to: node,
+                        progress: Math.random(),
+                        speed: 0.002 + Math.random() * 0.003,
+                        size: 3,
+                        color: '#ffb703'
+                    });
+                }
+            });
+        }
+
+        // Trigger Shockwave Ripple
+        function triggerPulse() {
+            pulseRipples.push({
+                x: centerX,
+                y: centerY,
+                radius: 0,
+                maxRadius: Math.max(width, height) * 0.45,
+                alpha: 1,
+                speed: 8
+            });
+        }
+
+        function update() {
+            // Rotate particles & update pulse ripples
+            particles.forEach(p => {
+                p.progress += p.speed;
+                if (p.progress >= 1) {
+                    p.progress = 0;
+                }
+            });
+
+            pulseRipples.forEach((ripple, index) => {
+                ripple.radius += ripple.speed;
+                ripple.alpha = 1 - (ripple.radius / ripple.maxRadius);
+                if (ripple.radius >= ripple.maxRadius) {
+                    pulseRipples.splice(index, 1);
+                }
+            });
+
+            // Dynamic background stats updates
+            document.getElementById('val-throughput').innerText = (120 + Math.sin(Date.now() * 0.002) * 12).toFixed(1) + ' TB/s';
+            document.getElementById('val-load').innerText = (40 + Math.cos(Date.now() * 0.001) * 5).toFixed(1) + '%';
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, width, height);
+
+            // 1. Grid Background Overlay
+            ctx.strokeStyle = 'rgba(0, 240, 255, 0.03)';
+            ctx.lineWidth = 1;
+            const gridSize = 40;
+            for (let x = 0; x < width; x += gridSize) {
+                ctx.beginPath();
+                ctx.moveTo(x, 0);
+                ctx.lineTo(x, height);
+                ctx.stroke();
+            }
+            for (let y = 0; y < height; y += gridSize) {
+                ctx.beginPath();
+                ctx.moveTo(0, y);
+                ctx.lineTo(width, y);
+                ctx.stroke();
+            }
+
+            // 2. Orbital Rings
+            const innerR = Math.min(width, height) * 0.23;
+            const outerR = Math.min(width, height) * 0.38;
+
+            [innerR, outerR].forEach((r, idx) => {
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, r, 0, Math.PI * 2);
+                ctx.strokeStyle = idx === 0 ? 'rgba(0, 240, 255, 0.15)' : 'rgba(255, 183, 3, 0.12)';
+                ctx.lineWidth = 1.5;
+                ctx.setLineDash([6, 6]);
+                ctx.stroke();
+                ctx.setLineDash([]);
+            });
+
+            // 3. Shockwave Ripples
+            pulseRipples.forEach(ripple => {
+                ctx.beginPath();
+                ctx.arc(ripple.x, ripple.y, ripple.radius, 0, Math.PI * 2);
+                ctx.strokeStyle = `rgba(0, 240, 255, ${ripple.alpha})`;
+                ctx.lineWidth = 3;
+                ctx.shadowColor = '#00f0ff';
+                ctx.shadowBlur = 15;
+                ctx.stroke();
+                ctx.shadowBlur = 0;
+            });
+
+            // 4. Connecting Lines / Conduits
+            connections.forEach(conn => {
+                const isHovered = hoverNode && (hoverNode === conn.from || hoverNode === conn.to);
+
+                ctx.beginPath();
+                ctx.moveTo(conn.from.x, conn.from.y);
+                ctx.lineTo(conn.to.x, conn.to.y);
+
+                if (conn.type === 'primary') {
+                    ctx.strokeStyle = isHovered ? 'rgba(0, 240, 255, 0.8)' : 'rgba(0, 240, 255, 0.12)';
+                    ctx.lineWidth = isHovered ? 2.5 : 1;
+                } else if (conn.type === 'secondary') {
+                    ctx.strokeStyle = isHovered ? 'rgba(255, 183, 3, 0.8)' : 'rgba(255, 183, 3, 0.15)';
+                    ctx.lineWidth = isHovered ? 2 : 1;
+                } else {
+                    ctx.strokeStyle = 'rgba(0, 240, 255, 0.04)';
+                    ctx.lineWidth = 0.5;
+                }
+                ctx.stroke();
+            });
+
+            // 5. Dynamic Data Flow Particles
+            particles.forEach(p => {
+                const x = p.from.x + (p.to.x - p.from.x) * p.progress;
+                const y = p.from.y + (p.to.y - p.from.y) * p.progress;
+
+                ctx.beginPath();
+                ctx.arc(x, y, p.size, 0, Math.PI * 2);
+                ctx.fillStyle = p.color;
+                ctx.shadowColor = p.color;
+                ctx.shadowBlur = 8;
+                ctx.fill();
+                ctx.shadowBlur = 0;
+            });
+
+            // 6. Draw Nodes
+            nodes.forEach(node => {
+                const isHover = (hoverNode === node);
+
+                if (node.type === 'core') {
+                    // Central Core "Si"
+                    const glowRadius = node.radius + Math.sin(Date.now() * 0.003) * 4;
+
+                    // External Pulsing Ring
+                    ctx.beginPath();
+                    ctx.arc(node.x, node.y, glowRadius + 12, 0, Math.PI * 2);
+                    ctx.strokeStyle = 'rgba(0, 240, 255, 0.3)';
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+
+                    // Core Fill
+                    ctx.beginPath();
+                    ctx.arc(node.x, node.y, node.radius, 0, Math.PI * 2);
+                    const grad = ctx.createRadialGradient(node.x, node.y, 5, node.x, node.y, node.radius);
+                    grad.addColorStop(0, '#00f0ff');
+                    grad.addColorStop(0.6, '#0055ff');
+                    grad.addColorStop(1, '#020b18');
+                    ctx.fillStyle = grad;
+                    ctx.shadowColor = '#00f0ff';
+                    ctx.shadowBlur = isHover ? 35 : 20;
+                    ctx.fill();
+                    ctx.strokeStyle = '#00f0ff';
+                    ctx.lineWidth = 3;
+                    ctx.stroke();
+                    ctx.shadowBlur = 0;
+
+                    // Core Symbol Text
+                    ctx.fillStyle = '#ffffff';
+                    ctx.font = '900 24px Orbitron';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillText('Si', node.x, node.y - 2);
+
+                    ctx.fillStyle = 'rgba(0, 240, 255, 0.8)';
+                    ctx.font = '700 9px Orbitron';
+                    ctx.fillText('CORE', node.x, node.y + 16);
+
+                } else {
+                    // Domain / Outer Nodes
+                    const scale = isHover ? 1.3 : 1.0;
+                    const r = node.radius * scale;
+
+                    // Node Glow Background
+                    ctx.beginPath();
+                    ctx.arc(node.x, node.y, r, 0, Math.PI * 2);
+
+                    if (node.type === 'inner') {
+                        ctx.fillStyle = isHover ? 'rgba(0, 240, 255, 0.35)' : 'rgba(8, 25, 48, 0.85)';
+                        ctx.strokeStyle = isHover ? '#00f0ff' : 'rgba(0, 240, 255, 0.5)';
+                    } else {
+                        ctx.fillStyle = isHover ? 'rgba(255, 183, 3, 0.35)' : 'rgba(25, 20, 10, 0.85)';
+                        ctx.strokeStyle = isHover ? '#ffb703' : 'rgba(255, 183, 3, 0.5)';
+                    }
+
+                    ctx.lineWidth = isHover ? 2.5 : 1.5;
+                    ctx.shadowColor = node.type === 'inner' ? '#00f0ff' : '#ffb703';
+                    ctx.shadowBlur = isHover ? 15 : 4;
+                    ctx.fill();
+                    ctx.stroke();
+                    ctx.shadowBlur = 0;
+
+                    // Node Symbol Icon
+                    ctx.font = `${node.type === 'outer' ? '16px' : '13px'} sans-serif`;
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillText(node.symbol, node.x, node.y);
+
+                    // Label below node
+                    ctx.fillStyle = isHover ? '#ffffff' : 'rgba(220, 240, 255, 0.85)';
+                    ctx.font = `${isHover ? 'bold 12px' : '600 11px'} Rajdhani`;
+                    ctx.fillText(node.label, node.x, node.y + r + 14);
+                }
+            });
+        }
+
+        function loop() {
+            update();
+            draw();
+            animationFrameId = requestAnimationFrame(loop);
+        }
+
+        // Mouse Hover & Interaction
+        canvas.addEventListener('mousemove', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const mx = e.clientX - rect.left;
+            const my = e.clientY - rect.top;
+
+            let found = null;
+            nodes.forEach(node => {
+                const dist = Math.hypot(node.x - mx, node.y - my);
+                if (dist < node.radius + 8) {
+                    found = node;
+                }
+            });
+
+            hoverNode = found;
+
+            if (found) {
+                canvas.style.cursor = 'pointer';
+                tooltip.style.display = 'block';
+                tooltip.style.left = `${e.clientX}px`;
+                tooltip.style.top = `${e.clientY}px`;
+                tooltip.innerHTML = `<strong>${found.label}</strong><br/><span style="color:#00f0ff;">Status: Synchronized</span>`;
+
+                // Update Inspector Panel
+                document.getElementById('node-title').innerText = found.label;
+                document.getElementById('node-type').innerText = found.type === 'core' ? 'Central Neural Hub' : (found.type === 'inner' ? 'Domain Industry Sector' : 'Macro Infrastructure');
+                document.getElementById('node-desc').innerText = found.desc;
+                document.getElementById('node-id-tag').innerText = found.id.toUpperCase();
+
+                if (found.badges) {
+                    document.getElementById('badge-1').innerText = found.badges[0] || 'Active Node';
+                    document.getElementById('badge-2').innerText = found.badges[1] || 'Optimized';
+                    document.getElementById('badge-3').innerText = found.badges[2] || 'Encrypted';
+                }
+            } else {
+                canvas.style.cursor = 'default';
+                tooltip.style.display = 'none';
+            }
         });
-    </script>
 
+        // Click Event - Shockwave at node
+        canvas.addEventListener('click', (e) => {
+            if (hoverNode) {
+                pulseRipples.push({
+                    x: hoverNode.x,
+                    y: hoverNode.y,
+                    radius: 0,
+                    maxRadius: 180,
+                    alpha: 1,
+                    speed: 6
+                });
+            } else {
+                triggerPulse();
+            }
+        });
+
+        // Event Listeners
+        document.getElementById('btn-pulse').addEventListener('click', triggerPulse);
+        
+        document.getElementById('btn-reset').addEventListener('click', () => {
+            hoverNode = null;
+            document.getElementById('node-title').innerText = sectorData.core.label;
+            document.getElementById('node-type').innerText = sectorData.core.category;
+            document.getElementById('node-desc').innerText = sectorData.core.desc;
+            document.getElementById('node-id-tag').innerText = 'CORE-01';
+        });
+
+        window.addEventListener('resize', resize);
+
+        // Start App
+        resize();
+        loop();
+    </script>
 </body>
 </html>
